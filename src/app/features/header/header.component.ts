@@ -7,6 +7,7 @@ import { UsersDataService } from 'src/app/shared/service/UsersData.service';
 import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { EventEmitterService } from 'src/app/shared/service/event-emitter.service';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +27,6 @@ export class HeaderComponent implements OnInit {
     private movieService: MovieService,
     private formBuilder: FormBuilder,
     private movieData:  MovieDataService,
-    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit() {
@@ -72,25 +72,25 @@ export class HeaderComponent implements OnInit {
 
 
   public search(value){
-    this.spinner.show();
+    EventEmitterService.get('showLoader').emit();
     this.movieData.clearList();
     this.movieService.searchMovie(value,1).subscribe((res) =>{
       if (res.results.length) {
         this.movieData.setListHeader(res, value);
         this.router.navigate([`/movie/search`])
         console.log('entrou ')
-        setTimeout(() => {this.spinner.hide();}, 500);
+        EventEmitterService.get('hideLoader').emit();
       } else {
         alert('Não há dados')
         this._msgError = 'Não há dados';
         this._typeError = 'info';
         console.log('saiu ')
-        setTimeout(() => {this.spinner.hide();}, 500);
+        EventEmitterService.get('hideLoader').emit();
       }
     },(error : Error) =>{
       this._msgError = 'Não há dados';
       this._typeError = 'danger';
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
     })
   }
   value = null;

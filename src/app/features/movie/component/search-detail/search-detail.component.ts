@@ -3,6 +3,7 @@ import { MovieService } from './../../service/movie.service';
 import { Router } from '@angular/router';
 import { MovieDataService } from './../../../../shared/service/movieData.service';
 import { Component, OnInit } from '@angular/core';
+import { EventEmitterService } from 'src/app/shared/service/event-emitter.service';
 
 @Component({
   selector: 'app-search-detail',
@@ -43,7 +44,7 @@ export class SearchDetailComponent implements OnInit {
   }
 
   public search(value, page){
-    this.spinner.show();
+    EventEmitterService.get('showLoader').emit();
     this._listData = [];
     this.movieData.clearList();
     this.movieService.searchMovie(value, this._page).subscribe((res) =>{
@@ -51,10 +52,10 @@ export class SearchDetailComponent implements OnInit {
       this._pageMax = res.total_pages;
       this._page    = res.page;
       this.movieData.setListHeader(res, value);
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
     },(error : Error) =>{
       console.log(error)
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
     })
   }
 

@@ -2,6 +2,7 @@ import { MovieService } from './../../service/movie.service';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EventEmitterService } from 'src/app/shared/service/event-emitter.service';
 
 @Component({
   selector: 'app-detail',
@@ -51,28 +52,28 @@ export class DetailComponent implements OnInit {
   }
 
   public getMovieDetail(id) {
-    this.spinner.show();
+    EventEmitterService.get('showLoader').emit();
     this._movie = [];
     this.movieService.getDetailMovie(id).subscribe((res) =>{
       this._movie = res;
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
       console.log(this._movie)
     },(error: Error) =>{
       console.log(error);
-      setTimeout(() => {this.spinner.hide();}, 1000);
+      EventEmitterService.get('hideLoader').emit();
     })
   }
 
   public getRecommendation(id){
-    this.spinner.show();
+    EventEmitterService.get('showLoader').emit();
     this._listRecomendation = [];
     this.movieService.getRecommendation(id).subscribe((res) =>{
       const filter = res.results.filter(item => item.poster_path != null )
       this.replaceArray(filter)
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
     },(error: Error) =>{
       console.log(error);
-      setTimeout(() => {this.spinner.hide();}, 1000);
+      EventEmitterService.get('hideLoader').emit();
     })
   }
 

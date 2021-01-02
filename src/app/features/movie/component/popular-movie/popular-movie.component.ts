@@ -4,6 +4,7 @@ import { NgbRatingConfig } from '@ng-bootstrap/ng-bootstrap';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Router } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
+import { EventEmitterService } from 'src/app/shared/service/event-emitter.service';
 
 @Component({
   selector: 'app-popular-movie',
@@ -18,9 +19,7 @@ export class PopularMovieComponent implements OnInit {
   constructor(
     private route: Router,
     private movieService: MovieService,
-    private userData: UsersDataService,
     private ngbRating: NgbRatingConfig,
-    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit() {
@@ -55,16 +54,16 @@ export class PopularMovieComponent implements OnInit {
 
 
   public getMovies(pagina) {
-    this.spinner.show();
+    EventEmitterService.get('showLoader').emit();
     this._listMovie = [];
     this.movieService.getMovies(pagina).subscribe((res) =>{
       this._listMovie = res.results;
       this._pageMax = res.total_pages;
-      setTimeout(() => {this.spinner.hide();}, 500);
+      EventEmitterService.get('hideLoader').emit();
       console.log(this._listMovie)
     },(error: Error) =>{
       console.log(error);
-      setTimeout(() => {this.spinner.hide();}, 1000);
+      EventEmitterService.get('hideLoader').emit();
     })
   }
 

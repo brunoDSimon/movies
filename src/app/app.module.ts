@@ -20,6 +20,7 @@ import localePt from '@angular/common/locales/pt';
 import { NgxSpinnerModule } from "ngx-spinner";
 import { TokenInterceptor } from './shared/interceptor/token.interceptor';
 import { RefrashTokenInterceptor } from './shared/interceptor/RefrashToken.interceptor';
+import { LoaderComponent } from './shared/componets/loader/loader.component';
 
 registerLocaleData(localePt)
 
@@ -28,7 +29,7 @@ registerLocaleData(localePt)
     AppComponent,
     HeaderComponent,
     FooterComponent,
-
+    LoaderComponent
   ],
   imports: [
     FormsModule,
